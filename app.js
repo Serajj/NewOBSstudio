@@ -35,7 +35,7 @@ const path = require('path');
 var session = require('express-session');
 
 
-const port = process.env.PORT || 3000;
+const port = 3000;
 console.log(port)
 
 const portserver = 8000;
