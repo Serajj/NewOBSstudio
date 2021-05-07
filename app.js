@@ -12,7 +12,7 @@ const userRoute = require('./routes/user');
 
 const { Server } = require('socket.io');
 
-const port = 3000;
+
 
 const io = new Server(server);
 
@@ -35,7 +35,9 @@ const path = require('path');
 var session = require('express-session');
 
 
+const port = process.env.PORT;
 
+const portserver = process.env.PORT;
 
 
 const mongoose = require('mongoose')
@@ -109,7 +111,7 @@ const config = {
         ping_timeout: 60
     },
     http: {
-        port: 8000,
+        port: portserver,
         mediaroot: path.join(__dirname, "media"),
         allow_origin: '*'
     },
