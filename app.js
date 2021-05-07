@@ -35,7 +35,8 @@ const path = require('path');
 var session = require('express-session');
 
 
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
+console.log(port)
 
 const portserver = 8000;
 
@@ -53,7 +54,7 @@ mongoose.connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true 
 
     return server.listen(port)
 }).then(() => {
-    console.log("Server running on port 3000");
+
 }).catch((err) => {
     console.log(err.message);
 })
