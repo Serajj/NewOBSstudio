@@ -37,7 +37,7 @@ var session = require('express-session');
 
 const port = process.env.PORT;
 
-const portserver = process.env.PORT;
+const portserver = 8000;
 
 
 const mongoose = require('mongoose')
