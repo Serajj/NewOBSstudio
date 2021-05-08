@@ -69,7 +69,8 @@ exports.socialUserInfo = async (req, res, next) => {
     const checkUser = await socialLoginModel.findOne({ email });
 
     if (checkUser) {
-        return res.status(200).json({ success: true, message: "logged In Successfully !!", token: token, data: getUserData(checkUser) })
+        const tsoken = getSignInToken(checkUser);
+        return res.status(200).json({ success: true, message: "logged In Successfully !!", token: tsoken, data: getUserData(checkUser) })
     }
 
     const newUser = new socialLoginModel({
