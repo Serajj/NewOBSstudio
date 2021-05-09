@@ -45,8 +45,15 @@ const mongoose = require('mongoose')
 const { MONGODB_URL } = require('./config');
 const bodyParser = require('body-parser');
 const authToken = require('./middleware/authToken');
+const fileUpload = require('express-fileupload');
+const fs = require('fs');
+
+
+
+
+app.use(fileUpload());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json())
+
 app.use(express.json())
 
 mongoose.connect(MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
@@ -70,6 +77,7 @@ app.set('view engine', 'ejs');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.use('/mystream', express.static(__dirname + '/media'));
 
 app.use(session({
@@ -87,9 +95,69 @@ app.use('/api', userRoute);
 
 
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/assets/myfile.html'))
+}
+)
+
+//stream video 
+
+app.get('/playVideo', function (req, res) {
+    console.log(req.body)
+    if (!req.body.streamId) {
+        res.status(422).json({ error: "Please provide stream id" });
+    }
+    var testFolder = path.join(__dirname, "media/live/" + req.body.streamId)
+    '';
+
+    var myfilename = fs.readdir(testFolder, (err, files) => {
+        if (err) {
+            res.status(404).json({ error: "No stream found !" });
+        }
+        files.forEach(file => {
+            console.log(file);
+            myfilename = file;
 
 
+            const myfilepath = testFolder + "/" + myfilename;
+
+            const stat = fs.statSync(myfilepath)
+            const fileSize = stat.size
+            const range = req.headers.range
+
+            // res.status(200).json({ path: myfilepath });
+
+            if (range) {
+                const parts = range.replace(/bytes=/, "").split("-")
+                const start = parseInt(parts[0], 10)
+                const end = parts[1]
+                    ? parseInt(parts[1], 10)
+                    : fileSize - 1
+
+                const chunksize = (end - start) + 1
+                const file = fs.createReadStream(path, { start, end })
+                const head = {
+                    'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+                    'Accept-Ranges': 'bytes',
+                    'Content-Length': chunksize,
+                    'Content-Type': 'video/mp4',
+                }
+
+                res.writeHead(206, head)
+                file.pipe(res)
+            } else {
+                const head = {
+                    'Content-Length': fileSize,
+                    'Content-Type': 'video/mp4',
+                }
+                res.writeHead(200, head)
+                fs.createReadStream(myfilepath).pipe(res)
+            }
+        });
+    });
+
+
+})
 
 
 app.use((req, res, next) => {

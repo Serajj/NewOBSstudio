@@ -6,7 +6,7 @@ const saveStreamModel = require("../model/saveStreamModel");
 const streamModel = require("../model/streamModel");
 var shortid = require('shortid');
 const socialLoginModel = require("../model/socialLoginModel");
-
+const path = require('path');
 
 
 exports.register = async (req, res, next) => {
@@ -56,6 +56,8 @@ exports.socialUserInfo = async (req, res, next) => {
     if (!body.type) {
         res.status(422).json({ success: false, message: "Please Provide user type" });
     }
+
+
 
 
 
@@ -114,8 +116,9 @@ exports.login = async (req, res, next) => {
 
 
 exports.getStream = async (req, res) => {
+
     var streams = {};
-    await saveStreamModel.find({}, function (err, allstreams) {
+    await streamModel.find({ user_id: req.user.id }, function (err, allstreams) {
         //var streams = {};
 
         allstreams.forEach(function (stream) {
@@ -132,6 +135,7 @@ exports.getStream = async (req, res) => {
 
 exports.startStream = async (req, res) => {
 
+
     if (!req.body.stream_name) {
         res.status(422).json({ success: false, message: "Please Provide stream name" });
     }
@@ -140,9 +144,28 @@ exports.startStream = async (req, res) => {
         res.status(422).json({ success: false, message: "Please Provide stream venue" });
     }
 
-    if (!req.body.cover_image) {
-        res.status(422).json({ success: false, message: "Please Provide stream cover_image" });
+    // if (!req.body.cover_image) {
+    //     res.status(422).json({ success: false, message: "Please Provide stream cover_image" });
+    // }
+
+
+
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('Please Choose file first');
     }
+
+    sampleFile = req.files.cover_image;
+    uploadPath = path.dirname(require.main.filename) + '/public/uploads/streamcovers/' + sampleFile.name;
+
+    // Use the mv() method to place the file somewhere on your server
+    sampleFile.mv(uploadPath, function (err) {
+        if (err)
+            return res.status(500).send(err.message);
+
+
+    });
+
+    console.log(sampleFile.name);
     var streamId = shortid.generate();
     console.log(streamId);
 
@@ -151,7 +174,7 @@ exports.startStream = async (req, res) => {
         user_id: req.user.id,
         stream_name: req.body.stream_name,
         venue: req.body.venue,
-        cover_image: req.body.cover_image
+        cover_image: sampleFile.name
     })
 
     try {
