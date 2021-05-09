@@ -75,7 +75,16 @@ const userData = (req, res, next) => {
         if (mydata != null)
             return res.status(200).json(extractUserdata(mydata));
         else {
-            return res.status(200).json({ data: "not found" });
+            socialLoginModel.findById(req.body.id, function (err, mydata) {
+
+                if (mydata != null)
+                    return res.status(200).json(extractUserdata(mydata));
+                else {
+                    return res.status(200).json({ data: "not found" });
+                }
+
+
+            });
         }
 
 
