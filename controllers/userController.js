@@ -121,13 +121,13 @@ exports.getStream = async (req, res) => {
     await streamModel.find({ user_id: req.user.id }, function (err, allstreams) {
         //var streams = {};
 
-        allstreams.forEach(function (stream) {
-            streams[stream._id] = stream;
-        });
-
+        // allstreams.forEach(function (stream) {
+        //     streams[stream._id] = stream;
+        // });
+        res.status(200).json({ success: true, message: "Stream fetched successfully", data: allstreams });
 
     });
-    res.status(200).json({ success: true, message: "Stream fetched successfully", data: streams });
+
 }
 
 
