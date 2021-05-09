@@ -107,11 +107,11 @@ const allrecordedView = (req, res, next) => {
 
 const streamView = (req, res, next) => {
 
-    user.find({ type: "streammer" }, function (err, socialUsers) {
+    user.find({ type: "streamer" }, function (err, socialUsers) {
 
 
 
-        socialLoginModel.find({ type: "streammer" }, function (err, normalUsers) {
+        socialLoginModel.find({ type: "streamer" }, function (err, normalUsers) {
             var users = socialUsers.concat(normalUsers);
 
             res.render('adminStremers', { 'username': req.session.name, users: users });
