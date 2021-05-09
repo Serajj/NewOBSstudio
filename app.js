@@ -102,7 +102,7 @@ app.get('/', (req, res) => {
 
 //stream video 
 
-app.get('/playVideo', function (req, res) {
+app.post('/playVideo', function (req, res) {
     console.log(req.body)
     if (!req.body.streamId) {
         res.status(422).json({ error: "Please provide stream id" });
