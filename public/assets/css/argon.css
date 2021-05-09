@@ -29838,3 +29838,9 @@ input.datetimepicker[data-color='yellow'] + .bootstrap-datetimepicker-widget.dro
 {
     background: transparent;
 }
+
+
+
+video.loading {
+    background: black url('../img/brand/logo.png') center center no-repeat;
+  }
