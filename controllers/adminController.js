@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const socialLoginModel = require('../model/socialLoginModel');
+const streamModel = require('../model/streamModel');
 const user = require('../model/user');
 
 
@@ -45,13 +47,72 @@ const loginPostView = async (req, res, next) => {
 }
 
 
+const deleteUser = (req, res, next) => {
+
+    if (!req.body.id) {
+        return redirect('/admin');
+    }
+    console.log(req.body.id);
+    user.findOneAndRemove({ _id: req.body.id }, function (err) {
+
+        backURL = req.header('Referer') || '/admin';
+
+        return res.redirect(backURL);
+
+    });
+}
+
+const userData = (req, res, next) => {
+
+    if (!req.body.id) {
+        return redirect('/admin');
+    }
+    console.log(req.body.id);
+
+
+    user.findById(req.body.id, function (err, mydata) {
+
+        if (mydata != null)
+            return res.status(200).json(extractUserdata(mydata));
+        else {
+            return res.status(200).json({ data: "not found" });
+        }
+
+
+    });
+}
+
 const liveStreamView = (req, res, next) => {
     res.render('stream', { 'username': req.session.name });
 
 }
+const allrecordedView = (req, res, next) => {
+
+    streamModel.find({}, function (err, streamList) {
+
+        res.render('allrecordedStreams', { 'username': req.session.name, streams: streamList });
+
+    })
+
+}
 
 const streamView = (req, res, next) => {
-    res.render('adminStremers', { 'username': req.session.name });
+
+    user.find({ type: "streammer" }, function (err, socialUsers) {
+
+
+
+        socialLoginModel.find({ type: "streammer" }, function (err, normalUsers) {
+            var users = socialUsers.concat(normalUsers);
+
+            res.render('adminStremers', { 'username': req.session.name, users: users });
+        });
+
+
+    });
+
+
+
 
 }
 
@@ -66,7 +127,13 @@ const taskView = (req, res, next) => {
 }
 
 
-
+extractUserdata = user => {
+    return ({
+        name: user.name,
+        phone: user.phone,
+        email: user.email
+    })
+}
 
 
 module.exports = {
@@ -77,5 +144,8 @@ module.exports = {
     streamView,
     liveStreamView,
     editorView,
-    taskView
+    taskView,
+    deleteUser,
+    allrecordedView,
+    userData
 }

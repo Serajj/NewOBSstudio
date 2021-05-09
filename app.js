@@ -20,6 +20,8 @@ const io = new Server(server);
 
 
 const adminRouter = require('./routes/adminRoute');
+
+const testRouter = require('./routes/testRouter');
 var dateFormat = require('dateformat');
 
 var saveStream = require('./model/saveStreamModel');
@@ -48,7 +50,13 @@ const authToken = require('./middleware/authToken');
 const fileUpload = require('express-fileupload');
 const fs = require('fs');
 
+var cors = require('cors');
 
+app.use(cors());
+
+app.use(cors({
+    origin: '*'
+}));
 
 
 app.use(fileUpload());
@@ -90,6 +98,8 @@ app.use(session({
 
 app.use('/admin', adminRouter);
 
+app.use('/test', testRouter);
+
 //api routes
 app.use('/api', userRoute);
 
@@ -102,13 +112,15 @@ app.get('/', (req, res) => {
 
 //stream video 
 
-app.post('/playVideo', function (req, res) {
-    console.log(req.body)
-    if (!req.body.streamId) {
+app.get('/playVideo', function (req, res) {
+    console.log(req.query)
+
+
+    if (!req.query.streamId) {
         res.status(422).json({ error: "Please provide stream id" });
     }
-    var testFolder = path.join(__dirname, "media/live/" + req.body.streamId)
-    '';
+    var testFolder = path.join(__dirname, "media/live/" + req.query.streamId);
+
 
     var myfilename = fs.readdir(testFolder, (err, files) => {
         if (err) {
@@ -153,6 +165,36 @@ app.post('/playVideo', function (req, res) {
                 res.writeHead(200, head)
                 fs.createReadStream(myfilepath).pipe(res)
             }
+        });
+    });
+
+
+})
+
+
+app.get('/getfilename', function (req, res) {
+    console.log(req.query)
+
+
+    if (!req.query.streamId) {
+        res.status(422).json({ error: "Please provide stream id" });
+    }
+    var testFolder = path.join(__dirname, "media/live/" + req.query.streamId);
+
+
+    var myfilename = fs.readdir(testFolder, (err, files) => {
+        if (err) {
+            return res.status(200).json({ error: "No stream found !" });
+        }
+        files.forEach(file => {
+            console.log(file);
+            myfilename = file;
+
+
+
+
+            return res.status(200).json({ url: myfilename });
+
         });
     });
 

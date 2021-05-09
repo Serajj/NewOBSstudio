@@ -2,7 +2,7 @@ const express = require("express");
 
 const { checkAuth } = require('../auth/checklogin');
 
-const { loginView, indexView, streamView, loginPostView, liveStreamView, editorView, taskView } = require("../controllers/adminController");
+const { loginView, indexView, streamView, loginPostView, liveStreamView, editorView, taskView, deleteUser, allrecordedView, userData } = require("../controllers/adminController");
 
 
 const router = express.Router();
@@ -15,10 +15,14 @@ router.get('/login', loginView);
 
 router.post('/login', loginPostView);
 
+router.post('/deleteUser', checkAuth, deleteUser);
 
+router.post('/userdata', checkAuth, userData);
 
 router.get('/streams', checkAuth, liveStreamView
 );
+
+router.get('/allstreams', checkAuth, allrecordedView);
 
 
 router.get('/stremers', checkAuth, streamView);
