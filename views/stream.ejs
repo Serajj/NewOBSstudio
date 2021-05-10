@@ -85,7 +85,7 @@
         <script>
 
 
-            // var localhost = "127.0.0.1";
+            //var localhost = "127.0.0.1";
             var localhost = "128.199.27.55";
 
 
@@ -117,7 +117,7 @@
 
                                 if (!allAvailableStreams.includes(stream)) {
                                     allAvailableStreams.push(stream);
-                                    var addinTable = ' <tr><td data-toggle="modal" data-target="#exampleModal">' + clientId + '</td><td><a href="#" >' + stream + '</a></td><td><video id="' + clientId + '" controls height="150" width="150" poster="http://128.199.27.55:3000/assets/img/brand/logo.jpeg" muted> </video></td><td><span onclick=playVideo("' + stream + '","' + clientId + '") ><i class="fa fa-play" style="cursor: pointer;color:red"></i></span></td><td>' + ip + '</td><td>' + startTime + '</td><td>' + video.height + ' x ' + video.width + '</td></tr>';
+                                    var addinTable = ' <tr onmouseover=playVideo("' + stream + '","' + clientId + '")><td data-toggle="modal" data-target="#exampleModal">' + clientId + '</td><td><a href="#" >' + stream + '</a></td><td ><video  id="' + clientId + '" controls height="150" width="150" poster="http://128.199.27.55:3000/assets/img/brand/logo.jpeg" muted> </video></td><td></td><td>' + ip + '</td><td>' + startTime + '</td><td>' + video.height + ' x ' + video.width + '</td></tr>';
 
 
 
@@ -127,6 +127,25 @@
 
 
                             }
+                            var newavailable = [];
+                            for (var strm in liveStreams) {
+                                var publ = liveStreams[strm].publisher;
+
+                                var stre = publ.stream;
+                                newavailable.push(stre);
+                            }
+
+                            var re = compareArray(allAvailableStreams, newavailable);
+                            if (!(re == "")) {
+                                //alert(re);
+                                allAvailableStreams = [];
+                                document.getElementById("tabledata").innerHTML = "";
+
+                            }
+
+
+
+
                         }
 
 
@@ -143,8 +162,19 @@
 
             }
 
+            function compareArray(array1, array2) {
 
-            function playVideo(stream, vid) {
+                var a = array1 = array1.filter(val => {
+                    if (!array2.includes(val)) {
+                        return true;
+                    }
+
+                });
+
+                return a;
+            }
+
+            async function playVideo(stream, vid) {
 
 
                 var vurl = "http://" + localhost + ":8000/live/" + stream + '.flv';
@@ -152,13 +182,15 @@
 
                 if (flvjs.isSupported()) {
 
-                    var flvPlayer = flvjs.createPlayer({
-                        type: 'flv',
-                        url: vurl
-                    });
-                    flvPlayer.attachMediaElement(document.getElementById(vid));
-                    flvPlayer.load();
-                    flvPlayer.play();
+                    if (document.getElementById(vid).paused) {
+                        var flvPlayer = flvjs.createPlayer({
+                            type: 'flv',
+                            url: vurl
+                        });
+                        flvPlayer.attachMediaElement(document.getElementById(vid));
+                        flvPlayer.load();
+                        await flvPlayer.play();
+                    }
                 }
             }
 
