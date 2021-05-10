@@ -150,22 +150,22 @@ exports.startStream = async (req, res) => {
 
 
 
-    if (!req.files || Object.keys(req.files).length === 0) {
-        return res.status(400).send('Please Choose file first');
-    }
+    // if (!req.files || Object.keys(req.files).length === 0) {
+    //     return res.status(400).send('Please Choose file first');
+    // }
 
-    sampleFile = req.files.cover_image;
-    uploadPath = path.dirname(require.main.filename) + '/public/uploads/streamcovers/' + sampleFile.name;
+    // sampleFile = req.files.cover_image;
+    // uploadPath = path.dirname(require.main.filename) + '/public/uploads/streamcovers/' + sampleFile.name;
 
-    // Use the mv() method to place the file somewhere on your server
-    sampleFile.mv(uploadPath, function (err) {
-        if (err)
-            return res.status(500).send(err.message);
+    // // Use the mv() method to place the file somewhere on your server
+    // sampleFile.mv(uploadPath, function (err) {
+    //     if (err)
+    //         return res.status(500).send(err.message);
 
 
-    });
+    // });
 
-    console.log(sampleFile.name);
+    // console.log(sampleFile.name);
     var streamId = shortid.generate();
     console.log(streamId);
 
@@ -174,7 +174,7 @@ exports.startStream = async (req, res) => {
         user_id: req.user.id,
         stream_name: req.body.stream_name,
         venue: req.body.venue,
-        cover_image: sampleFile.name
+        cover_image: "myimage.png"
     })
 
     try {

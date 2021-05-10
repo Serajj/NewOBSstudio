@@ -30,6 +30,7 @@
     "node-media-server": "^2.2.4",
     "nodemon": "^2.0.7",
     "npm": "^7.12.0",
+    "request": "^2.88.2",
     "shortid": "^2.2.16",
     "socket.io": "^4.0.1"
   }
