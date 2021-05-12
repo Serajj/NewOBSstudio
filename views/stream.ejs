@@ -59,7 +59,7 @@
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
                                 <tr>
-                                    <th scope="col" class="sort" data-sort="name">Client Id</th>
+
 
                                     <th scope="col" class="sort" data-sort="route">Stream Name</th>
                                     <th scope="col" class="sort" data-sort="route">Live</th>
@@ -117,8 +117,8 @@
 
                                 if (!allAvailableStreams.includes(stream)) {
                                     allAvailableStreams.push(stream);
-                                    var addinTable = ' <tr onmouseover=playVideo("' + stream + '","' + clientId + '")><td data-toggle="modal" data-target="#exampleModal">' + clientId + '</td><td><a href="#" >' + stream + '</a></td><td ><video  id="' + clientId + '" controls height="150" width="150" poster="http://128.199.27.55:3000/assets/img/brand/logo.jpeg" muted> </video></td><td></td><td>' + ip + '</td><td>' + startTime + '</td><td>' + video.height + ' x ' + video.width + '</td></tr>';
-
+                                    var addinTable = ' <tr onmouseover=playVideo("' + stream + '","' + clientId + '")><td><a href="#" >' + stream + '</a></td><td ><video  id="' + clientId + '" controls height="400" width="400" poster="http://128.199.27.55:3000/assets/img/brand/logo.jpeg" muted> </video></td><td></td><td>' + ip + '</td><td>' + startTime + '</td><td>' + video.height + ' x ' + video.width + '</td></tr>';
+                                    // <td data-toggle="modal" data-target="#exampleModal">' + clientId + '</td>
 
 
                                     document.getElementById("tabledata").innerHTML = document.getElementById("tabledata").innerHTML + addinTable;
